@@ -10,7 +10,8 @@ public class DesktopLauncher {
 
 		config.title = "Asteroids";
 		config.resizable = false;
-
+		config.width = 800;
+		config.height = 480;
 		new LwjglApplication(new Main(), config);
 	}
 }

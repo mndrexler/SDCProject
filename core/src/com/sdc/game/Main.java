@@ -13,16 +13,21 @@ public class Main extends Game {
 	private Player player;
 	private MainMenu menu;
 
+	public SpriteBatch batch;
+
 	@Override
 	public void create () {
+		batch = new SpriteBatch();
 		setScreen(menu = new MainMenu(this));
 	}
 
 	@Override
 	public void render () {
+		super.render();
 	}
 	
 	@Override
 	public void dispose () {
+		batch.dispose();
 	}
 }
