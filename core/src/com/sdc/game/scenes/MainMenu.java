@@ -1,12 +1,12 @@
 package com.sdc.game.scenes;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.sdc.game.Main;
 
@@ -35,7 +35,8 @@ public class MainMenu implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
 
         game.batch.begin();
-        game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),800,480);
+        game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        game.font.draw(game.batch, "Asteroids",0,0);
         game.batch.end();
 
     }
@@ -63,5 +64,6 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         background.dispose();
+
     }
 }
