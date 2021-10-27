@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sdc.game.Main;
 import com.sdc.game.Player;
 
@@ -15,15 +18,24 @@ public class MainMenu implements Screen {
     private Texture background;
     private Main game;
     private OrthographicCamera cam;
+    private Stage stage;
 
     //Testing player
     Player player;
 
     public MainMenu(Main g) {
         this.game = g;
-        cam = new OrthographicCamera();
-        cam.setToOrtho(false, 800, 480);
-        background = new Texture(Gdx.files.internal("space-background.jpg"));
+        this.stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+
+        //Skin skin = new Skin(Gdx.files.internal("skin/sgx-ui.json"));
+        //TextButton button = new TextButton("Play",skin);
+
+        this.stage.addActor(button);
+
+        this.cam = new OrthographicCamera();
+        this.cam.setToOrtho(false, 800, 480);
+        this.background = new Texture(Gdx.files.internal("space-background.jpg"));
 
         //Testing player
         player = new Player(game, "tester", new Texture(Gdx.files.internal("player.png")));
@@ -43,13 +55,15 @@ public class MainMenu implements Screen {
 
         game.batch.begin();
         game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        game.font.draw(game.batch, "Asteroids",0,0);
+        game.font.draw(game.batch, "Asteroids",150,450);
 
         //Testing player
         player.update(delta);
 
         game.batch.end();
 
+        stage.act();
+        stage.draw();
     }
 
     @Override

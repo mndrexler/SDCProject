@@ -18,9 +18,9 @@ public class Main extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("asteroidFont.fnt"));
 		font.setColor(Color.WHITE);
-		font.getData().setScale(4);
+		font.getData().setScale(1);
 		setScreen(new MainMenu(this));
 	}
 
