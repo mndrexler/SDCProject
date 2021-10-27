@@ -9,17 +9,24 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.sdc.game.Main;
+import com.sdc.game.Player;
 
 public class MainMenu implements Screen {
     private Texture background;
     private Main game;
     private OrthographicCamera cam;
 
-    public MainMenu(Main g){
+    //Testing player
+    Player player;
+
+    public MainMenu(Main g) {
         this.game = g;
         cam = new OrthographicCamera();
         cam.setToOrtho(false, 800, 480);
         background = new Texture(Gdx.files.internal("space-background.jpg"));
+
+        //Testing player
+        player = new Player(game, "tester", new Texture(Gdx.files.internal("player.png")));
     }
 
     @Override
@@ -37,6 +44,10 @@ public class MainMenu implements Screen {
         game.batch.begin();
         game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         game.font.draw(game.batch, "Asteroids",0,0);
+
+        //Testing player
+        player.update(delta);
+
         game.batch.end();
 
     }
