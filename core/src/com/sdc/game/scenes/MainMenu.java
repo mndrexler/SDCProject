@@ -28,10 +28,12 @@ public class MainMenu implements Screen {
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        //Skin skin = new Skin(Gdx.files.internal("skin/sgx-ui.json"));
-        //TextButton button = new TextButton("Play",skin);
+        // Comment out skin code for game to run
+        Skin skin = new Skin(Gdx.files.internal("skin/sgx-ui.json"));
+        TextButton button = new TextButton("Play",skin);
 
         this.stage.addActor(button);
+        // ^^^^^
 
         this.cam = new OrthographicCamera();
         this.cam.setToOrtho(false, 800, 480);
