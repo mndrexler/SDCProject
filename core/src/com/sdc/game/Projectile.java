@@ -18,4 +18,8 @@ public class Projectile {
         this.direction = direction;
         this.parent = parent;
     }
+
+    public Player getParent() {
+        return parent;
+    }
 }

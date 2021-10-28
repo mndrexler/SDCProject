@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
-
-import java.awt.*;
 import java.awt.event.MouseEvent;
 
 /**
@@ -48,6 +46,7 @@ public class Player {
         health = 100;
         score = 0;
         acceleration = 2;
+//        body = new Body();
         collider = new Rectangle(300, 300, 40, 40);
         font = new BitmapFont();
         layout = new GlyphLayout();

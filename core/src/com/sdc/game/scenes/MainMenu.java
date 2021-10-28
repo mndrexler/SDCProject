@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sdc.game.Main;
 import com.sdc.game.Player;
@@ -28,15 +30,27 @@ public class MainMenu implements Screen {
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Comment out skin code for game to run
-        Skin skin = new Skin(Gdx.files.internal("skin/sgx-ui.json"));
-        TextButton button = new TextButton("Play",skin);
-
-        this.stage.addActor(button);
-        // ^^^^^
-
         this.cam = new OrthographicCamera();
         this.cam.setToOrtho(false, 800, 480);
+
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); //placeholder skin
+        TextButton button = new TextButton("Play",skin);
+        button.setOrigin(button.getWidth()/2,button.getHeight()/2);
+        button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth(),200);
+        button.setTransform(true);
+        button.setScale(5,4);
+
+        button.addListener(new ClickListener(){
+           @Override
+           public void clicked(InputEvent event, float x, float y){
+                game.setScreen(new GameScreen(game));
+                dispose();
+           }
+        });
+
+        this.stage.addActor(button);
+
+
         this.background = new Texture(Gdx.files.internal("space-background.jpg"));
 
         //Testing player
@@ -91,6 +105,6 @@ public class MainMenu implements Screen {
     @Override
     public void dispose() {
         background.dispose();
-
+        stage.dispose();
     }
 }
