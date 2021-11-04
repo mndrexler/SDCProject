@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.sdc.game.Asteroid;
 import com.sdc.game.Main;
 import com.sdc.game.Player;
 
@@ -24,6 +25,7 @@ public class MainMenu implements Screen {
 
     //Testing player
     Player player;
+    Asteroid asteroid;
 
     public MainMenu(Main g) {
         this.game = g;
@@ -53,8 +55,9 @@ public class MainMenu implements Screen {
 
         this.background = new Texture(Gdx.files.internal("space-background.jpg"));
 
-        //Testing player
+        //Testing player and asteroid
         player = new Player(game, "tester", new Texture(Gdx.files.internal("player.png")));
+        asteroid = new Asteroid(game, new Texture(Gdx.files.internal("asteroid.png")));
     }
 
     @Override
@@ -73,8 +76,9 @@ public class MainMenu implements Screen {
         game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         game.font.draw(game.batch, "Asteroids",150,450);
 
-        //Testing player
+        //Testing player and asteroid
         player.update(delta);
+        asteroid.draw();
 
         game.batch.end();
 
