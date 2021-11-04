@@ -22,33 +22,29 @@ public class Player {
     private int score;
 
     // Graphics and physics
-    private Texture texture;
+    private Texture texture = new Texture(Gdx.files.internal("player.png"));
     private com.badlogic.gdx.math.Rectangle collider;
     private float acceleration;
     private float dx;
     private float dy;
 
-    // UI
-    private BitmapFont font;
-    private GlyphLayout layout;
 
+    //UI
+    private GlyphLayout layout;
     /**
      * Initializes the Player obejcts with appropriate variables
      *
      * @param game Reference to Game object
      * @param name Name of player
-     * @param texture Texture of player (Might not be needed as all players appear the same)
      */
-    public Player(Main game, String name, Texture texture) {
+    public Player(Main game, String name) {
         this.game = game;
         this.name = name;
-        this.texture = texture;
         health = 100;
         score = 0;
         acceleration = 2;
 //        body = new Body();
         collider = new Rectangle(300, 300, 40, 40);
-        font = new BitmapFont();
         layout = new GlyphLayout();
     }
 
@@ -83,8 +79,8 @@ public class Player {
     public void draw() {
         //Currently manually setting size and position
         game.batch.draw(texture, collider.x, collider.y, collider.width, collider.height);
-        layout.setText(font, name);
-        font.draw(game.batch, layout, collider.x + (collider.width - layout.width) / 2, collider.y - 10);
+        layout.setText(game.playerFont, name);
+        game.playerFont.draw(game.batch, layout, collider.x + (collider.width - layout.width) / 2, collider.y - 10);
 
         /*
         texture = new Texture...boolean
@@ -104,5 +100,9 @@ public class Player {
         move(delta);
         shoot();
         draw();
+    }
+
+    public void dispose(){
+        this.texture.dispose();
     }
 }

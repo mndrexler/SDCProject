@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sdc.game.Asteroid;
@@ -23,10 +25,6 @@ public class MainMenu implements Screen {
     private OrthographicCamera cam;
     private Stage stage;
 
-    //Testing player
-    Player player;
-    Asteroid asteroid;
-
     public MainMenu(Main g) {
         this.game = g;
         this.stage = new Stage(new ScreenViewport());
@@ -38,26 +36,33 @@ public class MainMenu implements Screen {
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); //placeholder skin
         TextButton button = new TextButton("Play",skin);
         button.setOrigin(button.getWidth()/2,button.getHeight()/2);
-        button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth(),200);
+        button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth(),250);
         button.setTransform(true);
         button.setScale(5,4);
+
+        final TextField field = new TextField("Enter Your Name", skin);
+        field.setOrigin(field.getWidth()/2,field.getHeight()/2);
+        field.setPosition(Gdx.graphics.getWidth()/2 - field.getWidth(),100);
+        field.setWidth(field.getWidth() + 100);
+        field.setScale(3,3);
 
         button.addListener(new ClickListener(){
            @Override
            public void clicked(InputEvent event, float x, float y){
-                game.setScreen(new GameScreen(game));
-                dispose();
+               String name = field.getText();
+               if(name.equals(""))
+                   field.setText("You need to enter a name");
+               else {
+                   game.setScreen(new GameScreen(game, name));
+                   dispose();
+               }
            }
         });
 
         this.stage.addActor(button);
-
+        this.stage.addActor(field);
 
         this.background = new Texture(Gdx.files.internal("space-background.jpg"));
-
-        //Testing player and asteroid
-        player = new Player(game, "tester", new Texture(Gdx.files.internal("player.png")));
-        asteroid = new Asteroid(game, new Texture(Gdx.files.internal("asteroid.png")));
     }
 
     @Override
@@ -74,11 +79,7 @@ public class MainMenu implements Screen {
 
         game.batch.begin();
         game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        game.font.draw(game.batch, "Asteroids",150,450);
-
-        //Testing player and asteroid
-        player.update(delta);
-        asteroid.draw();
+        game.titleFont.draw(game.batch, "Asteroids",150,450);
 
         game.batch.end();
 

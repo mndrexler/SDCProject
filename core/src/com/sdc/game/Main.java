@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.sdc.game.scenes.MainMenu;
@@ -13,14 +14,16 @@ import com.sdc.game.scenes.MainMenu;
 public class Main extends Game {
 
 	public SpriteBatch batch;
-	public BitmapFont font;
+	public BitmapFont titleFont;
+	public BitmapFont playerFont;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("asteroidFont.fnt"));
-		font.setColor(Color.WHITE);
-		font.getData().setScale(1);
+		playerFont = new BitmapFont();
+		titleFont = new BitmapFont(Gdx.files.internal("asteroidFont.fnt"));
+		titleFont.setColor(Color.WHITE);
+		titleFont.getData().setScale(1);
 		setScreen(new MainMenu(this));
 	}
 
@@ -32,6 +35,7 @@ public class Main extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		font.dispose();
+		titleFont.dispose();
+		playerFont.dispose();
 	}
 }

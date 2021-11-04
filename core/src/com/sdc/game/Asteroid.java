@@ -13,23 +13,39 @@ public class Asteroid {
 
     private Main game;
 
-    private Texture texture;
+    private Texture texture = new Texture(Gdx.files.internal("asteroid.png"));
     private com.badlogic.gdx.math.Rectangle collider;
 
-    private BitmapFont font;
     private GlyphLayout layout;
 
-    public Asteroid(Main game, Texture texture) {
+
+    private int x,y,velX,velY;
+    public Asteroid(Main game,int x, int y) {
         this.game = game;
-        this.texture = texture;
-        collider = new Rectangle(400, 300, 40, 40);
-        font = new BitmapFont();
+        collider = new Rectangle(x, y, 40, 40);
         layout = new GlyphLayout();
+        this.x = x;
+        this.y = y;
+        this.velX = (int)(8*Math.random() - 4);
+        this.velY = (int)(8*Math.random() - 4);
     }
 
-    public void draw() {
+    private void draw() {
         game.batch.draw(texture, collider.x, collider.y, collider.width, collider.height);
-        font.draw(game.batch, layout, collider.x + (collider.width - layout.width) / 2, collider.y - 10);
+        game.playerFont.draw(game.batch, layout, collider.x + (collider.width - layout.width) / 2, collider.y - 10);
     }
 
+    public void update(float delta){
+        this.x += this.velX;
+        this.y += this.velY;
+        this.x = this.x % Gdx.graphics.getWidth();
+        this.y = this.y % Gdx.graphics.getHeight();
+        this.collider.setX(x);
+        this.collider.setY(y);
+        this.draw();
+    }
+
+    public void dispose(){
+        texture.dispose();
+    }
 }
