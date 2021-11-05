@@ -25,6 +25,8 @@ public class MainMenu implements Screen {
     private OrthographicCamera cam;
     private Stage stage;
 
+    private Asteroid[] asteroids;
+
     public MainMenu(Main g) {
         this.game = g;
         this.stage = new Stage(new ScreenViewport());
@@ -33,8 +35,14 @@ public class MainMenu implements Screen {
         this.cam = new OrthographicCamera();
         this.cam.setToOrtho(false, 800, 480);
 
+        asteroids = new Asteroid[5];
+        for(int i = 0 ; i < asteroids.length; i++){
+            asteroids[i] = new Asteroid(game, (int)(Gdx.graphics.getWidth() * Math.random()), (int)(Gdx.graphics.getHeight() * Math.random()));
+        }
+
+        //UI Elements
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); //placeholder skin
-        TextButton button = new TextButton("Play",skin);
+        final TextButton button = new TextButton("Play",skin);
         button.setOrigin(button.getWidth()/2,button.getHeight()/2);
         button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth(),250);
         button.setTransform(true);
@@ -79,7 +87,11 @@ public class MainMenu implements Screen {
 
         game.batch.begin();
         game.batch.draw(background,0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        for(Asteroid as: asteroids){
+            as.update(delta);
+        }
         game.titleFont.draw(game.batch, "Asteroids",150,450);
+
 
         game.batch.end();
 

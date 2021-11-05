@@ -26,8 +26,8 @@ public class Asteroid {
         layout = new GlyphLayout();
         this.x = x;
         this.y = y;
-        this.velX = (int)(8*Math.random() - 4);
-        this.velY = (int)(8*Math.random() - 4);
+        this.velX = (int)(5*Math.random()) * Math.random()>=.5?1:-1;
+        this.velY = (int)(4*Math.random()) * Math.random()>=.5?1:-1;
     }
 
     private void draw() {
@@ -38,8 +38,15 @@ public class Asteroid {
     public void update(float delta){
         this.x += this.velX;
         this.y += this.velY;
-        this.x = this.x % Gdx.graphics.getWidth();
-        this.y = this.y % Gdx.graphics.getHeight();
+        // wraps asteroid around screen
+        if(this.x + (int) collider.width <= 0)
+            this.x += Gdx.graphics.getWidth();
+        else if(this.x >= Gdx.graphics.getWidth())
+            this.x = this.x % Gdx.graphics.getWidth() - (int) collider.width;
+        if(this.y + (int) collider.height <=0)
+            this.y += Gdx.graphics.getHeight();
+        else if(this.y >= Gdx.graphics.getHeight())
+            this.y = this.y % Gdx.graphics.getHeight() - (int) collider.height;
         this.collider.setX(x);
         this.collider.setY(y);
         this.draw();
