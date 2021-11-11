@@ -33,6 +33,9 @@ public class Main extends Game {
 	public BitmapFont titleFont;
 	public BitmapFont playerFont;
 
+	public int camWidth = 800;
+	public int camHeight = 480;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

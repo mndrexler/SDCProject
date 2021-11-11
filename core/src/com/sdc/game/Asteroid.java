@@ -44,13 +44,13 @@ public class Asteroid {
         this.y += this.velY;
         // wraps asteroid around screen
         if(this.x + (int) collider.width <= 0)
-            this.x += Gdx.graphics.getWidth() + collider.width;
-        else if(this.x >= Gdx.graphics.getWidth())
-            this.x = this.x % Gdx.graphics.getWidth() - (int) collider.width;
+            this.x += game.camWidth + collider.width;
+        else if(this.x >= game.camWidth)
+            this.x = this.x % game.camWidth - (int) collider.width;
         if(this.y + (int) collider.height <=0)
-            this.y += Gdx.graphics.getHeight() + collider.width;
-        else if(this.y >= Gdx.graphics.getHeight())
-            this.y = this.y % Gdx.graphics.getHeight() - (int) collider.height;
+            this.y += game.camHeight + collider.width;
+        else if(this.y >= game.camHeight)
+            this.y = this.y % game.camHeight - (int) collider.height;
         this.collider.setX(x);
         this.collider.setY(y);
         this.draw();

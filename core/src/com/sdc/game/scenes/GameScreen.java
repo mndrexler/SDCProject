@@ -29,12 +29,12 @@ public class GameScreen implements Screen {
         physics = new Physics();
         debugRenderer = new Box2DDebugRenderer();
         cam = new OrthographicCamera();
-        this.cam.setToOrtho(false, 800, 480);
+        this.cam.setToOrtho(false, game.camWidth, game.camHeight);
 
         player = new Player(game, playerName, physics.world);
         asteroids = new Asteroid[10];
         for(int i = 0; i < asteroids.length; i++){
-            asteroids[i] = new Asteroid(game,(int)(Gdx.graphics.getWidth() * Math.random()),(int)(Gdx.graphics.getHeight() * Math.random()));
+            asteroids[i] = new Asteroid(game,(int)(game.camWidth * Math.random()),(int)(game.camHeight * Math.random()));
         }
 
     }
@@ -58,7 +58,7 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
 
         game.batch.begin();
-        game.batch.draw(background, 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        game.batch.draw(background, 0,0,game.camWidth,game.camHeight);
 
         player.update(delta);
         for (Asteroid asteroid : asteroids) {
