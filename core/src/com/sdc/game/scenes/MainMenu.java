@@ -46,7 +46,7 @@ public class MainMenu implements Screen {
         button.setOrigin(button.getWidth()/2,button.getHeight()/2);
         button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth(),250);
         button.setTransform(true);
-        button.setScale(3,2);
+        //button.setScale(3,2);
 
         final TextField field = new TextField("Enter Your Name", skin);
         field.setOrigin(field.getWidth()/2,field.getHeight()/2);

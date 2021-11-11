@@ -18,7 +18,7 @@ import com.sdc.game.scenes.MainMenu;
  * Entire projectile class
  * Title Screen -buttons etc
  * Camera/Game map
- *
+ * Collisions
  *
  *
  *
