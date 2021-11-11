@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
  * Class representing all the player spaceships in the game
  */
 public class Player {
+    private final float DEGREES_TO_RADIANS = (float)Math.PI / 180;
+
     // Game information
     private Main game;
 
@@ -24,18 +26,16 @@ public class Player {
     private Texture texture = new Texture(Gdx.files.internal("player.png"));
     private float linAcceleration;
     private float rotAcceleration;
-    private float dx;
-    private float dy;
 
     //UI
     private GlyphLayout layout;
 
     /**
-     * Initializes the Player obejcts with appropriate variables
+     * Initializes the Player objects with appropriate variables
      *
      * @param game Reference to Game object
      * @param name Name of player
-     * @param world
+     * @param world World
      */
     public Player(Main game, String name, World world) {
         this.game = game;
@@ -45,9 +45,9 @@ public class Player {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(200, 200);
+        bodyDef.position.set(10, 10);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(50, 50);
+        shape.setAsBox(50 / game.PIXELS_PER_METER / 2, 50 / game.PIXELS_PER_METER / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
@@ -55,8 +55,8 @@ public class Player {
         body.createFixture(fixtureDef);
         shape.dispose();
 
-        linAcceleration = 2;
-        rotAcceleration = 2;
+        linAcceleration = 300;
+        rotAcceleration = 20;
         layout = new GlyphLayout();
     }
 
@@ -69,18 +69,12 @@ public class Player {
      */
     public void move(float delta) {
         //movement
-        if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter(Math.cos(body.getAngle()) * linAcceleration, Math.sin(body.getAngle()) * linAcceleration, true);
-        if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter(-Math.cos(body.getAngle()) * linAcceleration, -Math.sin(body.getAngle()) * linAcceleration, true);
+        if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter((float)Math.cos(body.getAngle()) * linAcceleration * delta, (float)Math.sin(body.getAngle()) * linAcceleration * delta, true);
+        if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter((float)-Math.cos(body.getAngle()) * linAcceleration * delta, (float)-Math.sin(body.getAngle()) * linAcceleration * delta, true);
 
         //rotation
-
-        /*
-        if (Gdx.input.isKeyPressed(Keys.A)) dx -= acceleration * delta;
-        if (Gdx.input.isKeyPressed(Keys.D)) dx += acceleration * delta;
-        if (Gdx.input.isKeyPressed(Keys.S)) dy -= acceleration * delta;
-        if (Gdx.input.isKeyPressed(Keys.W)) dy += acceleration * delta;
-         */
-        //collider.setPosition(collider.x + dx, collider.y + dy);
+        if (Gdx.input.isKeyPressed(Keys.A)) body.setAngularVelocity(body.getAngularVelocity() + rotAcceleration * DEGREES_TO_RADIANS * delta);
+        if (Gdx.input.isKeyPressed(Keys.D)) body.setAngularVelocity(body.getAngularVelocity() - rotAcceleration * DEGREES_TO_RADIANS * delta);
     }
 
     /**
@@ -97,7 +91,7 @@ public class Player {
      */
     public void draw() {
         //Currently manually setting size and position
-        game.batch.draw(texture, body.getPosition().x - texture.getWidth() / 2, body.getPosition().y - texture.getHeight() / 2);
+        game.batch.draw(texture, body.getPosition().x * game.PIXELS_PER_METER - texture.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - texture.getHeight() / 2);
         layout.setText(game.playerFont, name);
         game.playerFont.draw(game.batch, layout, body.getPosition().x + (texture.getWidth() - layout.width) / 2, body.getPosition().y - 10);
 
@@ -123,6 +117,9 @@ public class Player {
 
     public void dispose(){
         this.texture.dispose();
+    }
 
+    public Body getBody() {
+        return body;
     }
 }

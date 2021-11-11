@@ -10,11 +10,11 @@ import com.sdc.game.Asteroid;
 import com.sdc.game.Main;
 import com.sdc.game.Physics;
 import com.sdc.game.Player;
+import com.badlogic.gdx.math.Vector3;
 
 import javax.swing.*;
 
 public class GameScreen implements Screen {
-
     private Main game;
     private Physics physics;
     private Box2DDebugRenderer debugRenderer;
@@ -47,7 +47,10 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         physics.logicStep(delta);
-        debugRenderer.render(physics.world, cam.combined.scl(1f));
+//        Vector3 position = cam.position;
+//        position.x = player.getBody().getPosition().x * game.PIXELS_PER_METER;
+//        position.y = player.getBody().getPosition().y * game.PIXELS_PER_METER;
+//        cam.position.set(position);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -62,6 +65,7 @@ public class GameScreen implements Screen {
             asteroid.update(delta);
         }
         game.batch.end();
+        debugRenderer.render(physics.world, cam.combined.scl(game.PIXELS_PER_METER));
 
     }
 

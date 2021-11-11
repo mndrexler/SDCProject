@@ -42,11 +42,11 @@ public class MainMenu implements Screen {
 
         //UI Elements
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); //placeholder skin
-        final TextButton button = new TextButton("Play",skin);
+        final TextButton button = new TextButton("Play",skin,"big");
         button.setOrigin(button.getWidth()/2,button.getHeight()/2);
         button.setPosition(Gdx.graphics.getWidth()/2 - button.getWidth(),250);
         button.setTransform(true);
-        button.setScale(5,4);
+        button.setScale(3,2);
 
         final TextField field = new TextField("Enter Your Name", skin);
         field.setOrigin(field.getWidth()/2,field.getHeight()/2);
@@ -69,7 +69,7 @@ public class MainMenu implements Screen {
 
         //this.stage.addActor(button);
         this.stage.addActor(field);
-
+        this.stage.addActor(button);
         this.background = new Texture(Gdx.files.internal("space-background.jpg"));
     }
 

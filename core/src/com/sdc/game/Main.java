@@ -11,7 +11,22 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.sdc.game.scenes.MainMenu;
 
+/**
+ * TODO:
+ * Sprite Rotation
+ * Entire projectile class
+ * Title Screen -buttons etc
+ * Camera/Game map
+ *
+ *
+ *
+ *
+ *
+ *
+ * ...Multiplayer
+ */
 public class Main extends Game {
+	public final float PIXELS_PER_METER = 32f;
 
 	public SpriteBatch batch;
 	public BitmapFont titleFont;
