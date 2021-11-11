@@ -2,11 +2,9 @@ package com.sdc.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.physics.box2d.*;
 import java.awt.event.MouseEvent;
 
 /**
@@ -22,29 +20,43 @@ public class Player {
     private int score;
 
     // Graphics and physics
+    Body body;
     private Texture texture = new Texture(Gdx.files.internal("player.png"));
-    private com.badlogic.gdx.math.Rectangle collider;
-    private float acceleration;
+    private float linAcceleration;
+    private float rotAcceleration;
     private float dx;
     private float dy;
 
-
     //UI
     private GlyphLayout layout;
+
     /**
      * Initializes the Player obejcts with appropriate variables
      *
      * @param game Reference to Game object
      * @param name Name of player
+     * @param world
      */
-    public Player(Main game, String name) {
+    public Player(Main game, String name, World world) {
         this.game = game;
         this.name = name;
         health = 100;
         score = 0;
-        acceleration = 2;
-//        body = new Body();
-        collider = new Rectangle(300, 300, 40, 40);
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(200, 200);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(50, 50);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        body = world.createBody(bodyDef);
+        body.createFixture(fixtureDef);
+        shape.dispose();
+
+        linAcceleration = 2;
+        rotAcceleration = 2;
         layout = new GlyphLayout();
     }
 
@@ -56,12 +68,19 @@ public class Player {
      * @param delta GDX.graphics.getDeltaTime
      */
     public void move(float delta) {
+        //movement
+        if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter(Math.cos(body.getAngle()) * linAcceleration, Math.sin(body.getAngle()) * linAcceleration, true);
+        if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter(-Math.cos(body.getAngle()) * linAcceleration, -Math.sin(body.getAngle()) * linAcceleration, true);
+
+        //rotation
+
+        /*
         if (Gdx.input.isKeyPressed(Keys.A)) dx -= acceleration * delta;
         if (Gdx.input.isKeyPressed(Keys.D)) dx += acceleration * delta;
         if (Gdx.input.isKeyPressed(Keys.S)) dy -= acceleration * delta;
         if (Gdx.input.isKeyPressed(Keys.W)) dy += acceleration * delta;
-
-        collider.setPosition(collider.x + dx, collider.y + dy);
+         */
+        //collider.setPosition(collider.x + dx, collider.y + dy);
     }
 
     /**
@@ -78,9 +97,9 @@ public class Player {
      */
     public void draw() {
         //Currently manually setting size and position
-        game.batch.draw(texture, collider.x, collider.y, collider.width, collider.height);
+        game.batch.draw(texture, body.getPosition().x - texture.getWidth() / 2, body.getPosition().y - texture.getHeight() / 2);
         layout.setText(game.playerFont, name);
-        game.playerFont.draw(game.batch, layout, collider.x + (collider.width - layout.width) / 2, collider.y - 10);
+        game.playerFont.draw(game.batch, layout, body.getPosition().x + (texture.getWidth() - layout.width) / 2, body.getPosition().y - 10);
 
         /*
         texture = new Texture...boolean
@@ -104,5 +123,6 @@ public class Player {
 
     public void dispose(){
         this.texture.dispose();
+
     }
 }

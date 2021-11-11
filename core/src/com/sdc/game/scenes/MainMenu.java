@@ -67,7 +67,7 @@ public class MainMenu implements Screen {
            }
         });
 
-        this.stage.addActor(button);
+        //this.stage.addActor(button);
         this.stage.addActor(field);
 
         this.background = new Texture(Gdx.files.internal("space-background.jpg"));
