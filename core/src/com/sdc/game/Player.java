@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 import java.awt.event.MouseEvent;
 
@@ -22,10 +23,14 @@ public class Player {
     private int score;
 
     // Graphics and physics
-    Body body;
+    private World world;
+    private Body body;
     private Texture texture = new Texture(Gdx.files.internal("player.png"));
+    private Sprite sprite = new Sprite(texture);
     private float linAcceleration;
     private float rotAcceleration;
+    private float maxLinVelocity;
+    private float maxRotVelocity;
 
     //UI
     private GlyphLayout layout;
@@ -42,6 +47,7 @@ public class Player {
         this.name = name;
         health = 100;
         score = 0;
+        this.world = world;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -55,8 +61,11 @@ public class Player {
         body.createFixture(fixtureDef);
         shape.dispose();
 
-        linAcceleration = 300;
-        rotAcceleration = 20;
+        linAcceleration = 1000;
+        rotAcceleration = 70;
+        maxLinVelocity = 5;
+        maxRotVelocity = 1;
+
         layout = new GlyphLayout();
     }
 
@@ -71,18 +80,22 @@ public class Player {
         //movement
         if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter((float)Math.cos(body.getAngle()) * linAcceleration * delta, (float)Math.sin(body.getAngle()) * linAcceleration * delta, true);
         if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter((float)-Math.cos(body.getAngle()) * linAcceleration * delta, (float)-Math.sin(body.getAngle()) * linAcceleration * delta, true);
+        if (body.getLinearVelocity().len() > maxLinVelocity) body.setLinearVelocity(body.getLinearVelocity().setLength(maxLinVelocity));
 
         //rotation
         if (Gdx.input.isKeyPressed(Keys.A)) body.setAngularVelocity(body.getAngularVelocity() + rotAcceleration * DEGREES_TO_RADIANS * delta);
         if (Gdx.input.isKeyPressed(Keys.D)) body.setAngularVelocity(body.getAngularVelocity() - rotAcceleration * DEGREES_TO_RADIANS * delta);
+        if (body.getAngularVelocity() > maxRotVelocity) body.setAngularVelocity(maxRotVelocity);
+        if (body.getAngularVelocity() < -maxRotVelocity) body.setAngularVelocity(-maxRotVelocity);
     }
 
     /**
      * Spawns and fires a projectile
      */
     public void shoot() {
-        if (Gdx.input.isButtonPressed(MouseEvent.BUTTON1)) {
-            // Call projectile instantiation
+        if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
+            System.out.println("fire");
+            new Projectile(body.getPosition().x, body.getPosition().y, body.getAngle(), this, game, world);
         }
     }
 
@@ -91,9 +104,12 @@ public class Player {
      */
     public void draw() {
         //Currently manually setting size and position
-        game.batch.draw(texture, body.getPosition().x * game.PIXELS_PER_METER - texture.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - texture.getHeight() / 2);
+        sprite.setRotation(body.getAngle() / DEGREES_TO_RADIANS - 90);
+        sprite.setPosition(body.getPosition().x * game.PIXELS_PER_METER - sprite.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - sprite.getHeight() / 2);
+        sprite.draw(game.batch);
+        //game.batch.draw(sprite, body.getPosition().x * game.PIXELS_PER_METER - sprite.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - sprite.getHeight() / 2);
         layout.setText(game.playerFont, name);
-        game.playerFont.draw(game.batch, layout, body.getPosition().x + (texture.getWidth() - layout.width) / 2, body.getPosition().y - 10);
+        game.playerFont.draw(game.batch, layout, body.getPosition().x + (sprite.getWidth() - layout.width) / 2, body.getPosition().y - 10);
 
         /*
         texture = new Texture...boolean
@@ -116,7 +132,7 @@ public class Player {
     }
 
     public void dispose(){
-        this.texture.dispose();
+        texture.dispose();
     }
 
     public Body getBody() {
