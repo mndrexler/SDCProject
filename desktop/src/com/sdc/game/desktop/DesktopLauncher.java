@@ -1,17 +1,16 @@
 package com.sdc.game.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.sdc.game.Main;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
-		config.title = "Asteroids";
-		config.resizable = false;
-		config.width = 800;
-		config.height = 480;
-		new LwjglApplication(new Main(), config);
+		config.setTitle("Asteroids");
+		config.setResizable(true);
+		//config.setWindowSizeLimits(800,400,800,400);
+		new Lwjgl3Application(new Main(), config);
 	}
 }

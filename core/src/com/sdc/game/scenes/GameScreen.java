@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sdc.game.Asteroid;
 import com.sdc.game.Main;
 import com.sdc.game.Physics;
@@ -19,6 +21,7 @@ public class GameScreen implements Screen {
     private Physics physics;
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera cam;
+    private Viewport view;
 
     private Texture background = new Texture(Gdx.files.internal("gamescreen.jpg"));
     private Player player;
@@ -29,6 +32,7 @@ public class GameScreen implements Screen {
         physics = new Physics();
         debugRenderer = new Box2DDebugRenderer();
         cam = new OrthographicCamera();
+        view = new FitViewport(game.camWidth, game.camHeight,cam);
         this.cam.setToOrtho(false, game.camWidth, game.camHeight);
 
         player = new Player(game, playerName, physics.world);
@@ -71,7 +75,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        view.update(width,height);
     }
 
     @Override
