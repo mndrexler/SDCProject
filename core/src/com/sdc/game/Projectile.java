@@ -7,17 +7,19 @@ import com.badlogic.gdx.physics.box2d.*;
 
 public class Projectile {
     private Main game;
-    private float direction;
+    private float angle;
     private Player parent;
     private Body body;
     private Texture texture;
     private Sprite sprite;
-    private float velocity;
+    private float speed;
+    private float delta;
 
     public Projectile(float x, float y, float angle, Player parent, Main game, World world) {
         this.game = game;
-        this.direction = direction;
+        this.angle = angle;
         this.parent = parent;
+        this.delta = delta;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -29,19 +31,28 @@ public class Projectile {
         body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         shape.dispose();
-        body.setTransform(x, y, angle);
+        body.setTransform(x + (float)Math.cos(angle) * 10, y + (float)Math.sin(angle) * 10, angle);
+        body.setUserData(this);
 
-        velocity = 7;
+        speed = 7;
+    }
 
-        body.setLinearVelocity(body.getLinearVelocity().setLength(velocity));
+    public void move() {
+        float dx = (float) (Math.cos(angle) * speed);
+        float dy = (float) (Math.sin(angle) * speed);
+
+        body.setTransform(body.getPosition().x + dx, body.getPosition().y + dy, angle);
+    }
+
+    public boolean onCollision(Object other) {
+        if (other instanceof Player) {
+            if (((Player) other).setHealth(-10)) parent.setScore(10);
+        }
+        return true;
     }
 
     public void draw() {
 
-    }
-
-    public Player getParent() {
-        return parent;
     }
 
     public void dispose() {

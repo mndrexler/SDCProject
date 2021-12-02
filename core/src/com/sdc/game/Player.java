@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
+
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * Class representing all the player spaceships in the game
@@ -21,6 +24,7 @@ public class Player {
     private String name;
     private int health;
     private int score;
+    private Array<Projectile> bullets;
 
     // Graphics and physics
     private World world;
@@ -48,6 +52,7 @@ public class Player {
         health = 100;
         score = 0;
         this.world = world;
+        bullets = new Array<>();
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -60,6 +65,7 @@ public class Player {
         body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         shape.dispose();
+        body.setUserData(this);
 
         linAcceleration = 1000;
         rotAcceleration = 70;
@@ -73,18 +79,16 @@ public class Player {
      * Calculates movement of the player. Implemented using a "fake" physics where user input corresponds
      * to an acceleration in a certain direction, accelerating the player without using actual physics
      * calculation
-     *
-     * @param delta GDX.graphics.getDeltaTime
      */
-    public void move(float delta) {
+    public void move() {
         //movement
-        if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter((float)Math.cos(body.getAngle()) * linAcceleration * delta, (float)Math.sin(body.getAngle()) * linAcceleration * delta, true);
-        if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter((float)-Math.cos(body.getAngle()) * linAcceleration * delta, (float)-Math.sin(body.getAngle()) * linAcceleration * delta, true);
+        if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter((float)Math.cos(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), (float)Math.sin(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), true);
+        if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter((float)-Math.cos(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), (float)-Math.sin(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), true);
         if (body.getLinearVelocity().len() > maxLinVelocity) body.setLinearVelocity(body.getLinearVelocity().setLength(maxLinVelocity));
 
         //rotation
-        if (Gdx.input.isKeyPressed(Keys.A)) body.setAngularVelocity(body.getAngularVelocity() + rotAcceleration * DEGREES_TO_RADIANS * delta);
-        if (Gdx.input.isKeyPressed(Keys.D)) body.setAngularVelocity(body.getAngularVelocity() - rotAcceleration * DEGREES_TO_RADIANS * delta);
+        if (Gdx.input.isKeyPressed(Keys.A)) body.setAngularVelocity(body.getAngularVelocity() + rotAcceleration * DEGREES_TO_RADIANS * Gdx.graphics.getDeltaTime());
+        if (Gdx.input.isKeyPressed(Keys.D)) body.setAngularVelocity(body.getAngularVelocity() - rotAcceleration * DEGREES_TO_RADIANS * Gdx.graphics.getDeltaTime());
         if (body.getAngularVelocity() > maxRotVelocity) body.setAngularVelocity(maxRotVelocity);
         if (body.getAngularVelocity() < -maxRotVelocity) body.setAngularVelocity(-maxRotVelocity);
     }
@@ -95,8 +99,18 @@ public class Player {
     public void shoot() {
         if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
             System.out.println("fire");
-            new Projectile(body.getPosition().x, body.getPosition().y, body.getAngle(), this, game, world);
+            Projectile bullet = new Projectile(body.getPosition().x, body.getPosition().y, body.getAngle(), this, game, world);
+            bullets.add(bullet);
         }
+    }
+
+    public boolean setHealth(int change) {
+        health += change;
+        return health <= 0;
+    }
+
+    public void setScore(int change) {
+        score += change;
     }
 
     /**
@@ -122,13 +136,15 @@ public class Player {
      * Functions as a layer of abstraction and is to be called by Main. A high level script only needs
      * to call update(), and it will take care of the smaller methods within the Player class. Helps
      * to reduce redundancy in other scripts.
-     *
-     * @param delta GDX.graphics.getDeltaTime
      */
-    public void update(float delta) {
-        move(delta);
+    public void update() {
+        move();
         shoot();
         draw();
+        for (Projectile b : bullets) {
+            b.move();
+            b.draw();
+        }
     }
 
     public void dispose(){
