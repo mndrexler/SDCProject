@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sdc.game.Asteroid;
 import com.sdc.game.Main;
+import com.sdc.game.MenuAsteroid;
+import com.sdc.game.Physics;
 
 public class MainMenu implements Screen {
     private Texture background;
@@ -21,7 +23,7 @@ public class MainMenu implements Screen {
     private OrthographicCamera cam;
     private Stage stage;
 
-    private Asteroid[] asteroids;
+    private MenuAsteroid[] asteroids;
 
     public MainMenu(Main g) {
         this.game = g;
@@ -30,7 +32,7 @@ public class MainMenu implements Screen {
 
         asteroids = new Asteroid[5];
         for(int i = 0 ; i < asteroids.length; i++){
-            asteroids[i] = new Asteroid(game, (int)(game.camWidth * Math.random()), (int)(game.camHeight * Math.random()));
+            asteroids[i] = new MenuAsteroid(game,(int)(game.camWidth * Math.random()), (int)(game.camHeight * Math.random()));
         }
 
         //UI Elements

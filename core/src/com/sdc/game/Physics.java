@@ -13,6 +13,6 @@ public class Physics {
 
     // our game logic here
     public void logicStep(float delta){
-        world.step(delta , 3, 3);
+        world.step(delta, 3, 3);
     }
 }
