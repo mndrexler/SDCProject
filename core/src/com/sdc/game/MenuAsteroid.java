@@ -7,17 +7,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.box2d.*;
-
 import java.awt.event.MouseEvent;
 
-public class Asteroid {
+public class MenuAsteroid {
 
     private Main game;
 
     private Texture texture = new Texture(Gdx.files.internal("asteroid.png"));
     private Rectangle collider;
-    private Body body;
 
     private GlyphLayout layout;
 
@@ -26,7 +23,7 @@ public class Asteroid {
     private float rot = 0;
     private float rotUp = (float)(5*Math.random()) * Math.random()>=.5?1:-1;
 
-    public Asteroid(Main game, World world, int x, int y) {
+    public MenuAsteroid(Main game,int x, int y) {
         this.game = game;
         collider = new Rectangle(x, y, 40, 40);
         layout = new GlyphLayout();
@@ -56,9 +53,6 @@ public class Asteroid {
             this.y = this.y % game.camHeight - (int) collider.height;
         this.collider.setX(x);
         this.collider.setY(y);
-
-        body.setTransform(x, y, rot);
-
         this.draw();
     }
 
