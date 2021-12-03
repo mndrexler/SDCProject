@@ -44,9 +44,9 @@ public class GameScreen implements Screen {
         physics.world.setContactListener(new ContactListener() {
             @Override public void beginContact(Contact contact) {
                 /*
-                call collisions method in game
+                call collisions method here
                 OR
-                directly call collisions method in projectiles class
+                call collisions method in object class
                  */
                 Object aObject = contact.getFixtureA().getBody().getUserData();
                 Object bObject = contact.getFixtureB().getBody().getUserData();
@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
             }
         }
         for (Asteroid asteroid : asteroids) {
-            asteroid.update(delta);
+            asteroid.update();
         }
         game.batch.end();
         debugRenderer.render(physics.world, cam.combined.scl(game.PIXELS_PER_METER));
@@ -135,12 +135,11 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         background.dispose();
+        for (Projectile b : player.getBullets()) b.dispose();
         player.dispose();
         physics.world.dispose();
         debugRenderer.dispose();
-        for(Asteroid as: asteroids){
-            as.dispose();
-        }
+        for(Asteroid as: asteroids) as.dispose();
     }
 }
 

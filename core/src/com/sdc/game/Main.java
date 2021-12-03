@@ -28,6 +28,7 @@ import com.sdc.game.scenes.MainMenu;
  */
 public class Main extends Game {
 	public final float PIXELS_PER_METER = 32f;
+	public final float DEGREES_TO_RADIANS = (float)Math.PI / 180;
 
 	public SpriteBatch batch;
 	public BitmapFont titleFont;

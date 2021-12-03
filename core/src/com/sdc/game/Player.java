@@ -7,21 +7,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import java.util.List;
-
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 /**
- * Class representing all the player spaceships in the game
+ * Class representing the player-controlled spaceships
  */
 public class Player {
-    private final float DEGREES_TO_RADIANS = (float)Math.PI / 180;
-
     // Game information
     private Main game;
 
-    // Player information
+    // Object information
     private String name;
     private int health;
     private int score;
@@ -42,11 +36,13 @@ public class Player {
     private GlyphLayout layout;
 
     /**
-     * Initializes the Player objects with appropriate variables
+     * Initializes the Player with appropriate variables
      *
      * @param game Reference to Game object
      * @param name Name of player
-     * @param world World
+     * @param world Reference to the physics World
+     * @param posX Initial x position of the player
+     * @param posY Initial y position of the player
      */
     public Player(Main game, String name, World world, int posX, int posY) {
         this.game = game;
@@ -56,6 +52,7 @@ public class Player {
         this.world = world;
         bullets = new Array<>();
 
+        // Body setup
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(posX, posY);
@@ -83,15 +80,15 @@ public class Player {
      * to an acceleration in a certain direction, accelerating the player without using actual physics
      * calculation
      */
-    public void move() {
+    private void move() {
         //movement
         if (Gdx.input.isKeyPressed(Keys.W)) body.applyForceToCenter((float)Math.cos(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), (float)Math.sin(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), true);
         if (Gdx.input.isKeyPressed(Keys.S)) body.applyForceToCenter((float)-Math.cos(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), (float)-Math.sin(body.getAngle()) * linAcceleration * Gdx.graphics.getDeltaTime(), true);
         if (body.getLinearVelocity().len() > maxLinVelocity) body.setLinearVelocity(body.getLinearVelocity().setLength(maxLinVelocity));
 
         //rotation
-        if (Gdx.input.isKeyPressed(Keys.A)) body.setAngularVelocity(body.getAngularVelocity() + rotAcceleration * DEGREES_TO_RADIANS * Gdx.graphics.getDeltaTime());
-        if (Gdx.input.isKeyPressed(Keys.D)) body.setAngularVelocity(body.getAngularVelocity() - rotAcceleration * DEGREES_TO_RADIANS * Gdx.graphics.getDeltaTime());
+        if (Gdx.input.isKeyPressed(Keys.A)) body.setAngularVelocity(body.getAngularVelocity() + rotAcceleration * game.DEGREES_TO_RADIANS * Gdx.graphics.getDeltaTime());
+        if (Gdx.input.isKeyPressed(Keys.D)) body.setAngularVelocity(body.getAngularVelocity() - rotAcceleration * game.DEGREES_TO_RADIANS * Gdx.graphics.getDeltaTime());
         if (body.getAngularVelocity() > maxRotVelocity) body.setAngularVelocity(maxRotVelocity);
         if (body.getAngularVelocity() < -maxRotVelocity) body.setAngularVelocity(-maxRotVelocity);
     }
@@ -99,7 +96,7 @@ public class Player {
     /**
      * Spawns and fires a projectile
      */
-    public void shoot() {
+    private void shoot() {
         if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
             System.out.println("fire");
             Projectile bullet = new Projectile(body.getPosition().x, body.getPosition().y, body.getAngle(), this, game, world);
@@ -107,10 +104,16 @@ public class Player {
         }
     }
 
+    /**
+     * Changes the health of the player, kills the player if remaining health is below 0
+     *
+     * @param change Amount to be changed
+     * @return True if the player dies, and false otherwise
+     */
     public boolean setHealth(int change) {
         health += change;
         System.out.println("health: " + health);
-        if (health <= 0) {
+        if (health <= 0) { // If the player is dead
             toBeDeleted = true;
             sprite.setAlpha(0.0f);
             //body.setActive(false);
@@ -120,28 +123,26 @@ public class Player {
         }
     }
 
+    /**
+     * Changes the player's score
+     *
+     * @param change Amount to be changed
+     */
     public void setScore(int change) {
         score += change;
         System.out.println("score" + score);
     }
 
     /**
-     * Renders the Player object
+     * Renders the Player
      */
-    public void draw() {
+    private void draw() {
         //Currently manually setting size and position
-        sprite.setRotation(body.getAngle() / DEGREES_TO_RADIANS - 90);
+        sprite.setRotation(body.getAngle() / game.DEGREES_TO_RADIANS - 90);
         sprite.setPosition(body.getPosition().x * game.PIXELS_PER_METER - sprite.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - sprite.getHeight() / 2);
         sprite.draw(game.batch);
-        //game.batch.draw(sprite, body.getPosition().x * game.PIXELS_PER_METER - sprite.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - sprite.getHeight() / 2);
         layout.setText(game.playerFont, name);
         game.playerFont.draw(game.batch, layout, body.getPosition().x + (sprite.getWidth() - layout.width) / 2, body.getPosition().y - 10);
-
-        /*
-        texture = new Texture...boolean
-            sprite = new Sprite...
-        this.sprite.setposition(...);
-        */
     }
 
     /**
@@ -153,24 +154,39 @@ public class Player {
         move();
         shoot();
         draw();
-        for (Projectile b : bullets) {
-            b.move();
-            b.draw();
-        }
+        for (Projectile b : bullets) b.update();
     }
 
+    /**
+     * Disposes the player
+     */
     public void dispose(){
         texture.dispose();
     }
 
+    /**
+     * Returns the body of the player object
+     *
+     * @return The body of the player object
+     */
     public Body getBody() {
         return body;
     }
 
+    /**
+     * Returns true if the player should be deleted, and false otherwise
+     *
+     * @return True if the player should be deleted, and false otherwise
+     */
     public boolean toBeDeleted() {
         return toBeDeleted;
     }
 
+    /**
+     * Returns the projectiles array
+     *
+     * @return The projectiles array
+     */
     public Array<Projectile> getBullets() {
         return bullets;
     }

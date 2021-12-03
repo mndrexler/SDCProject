@@ -34,7 +34,7 @@ public class MainMenu implements Screen {
         view = new FitViewport(game.camWidth, game.camHeight, cam);
         this.cam.setToOrtho(false,game.camWidth,game.camHeight);
 
-        asteroids = new Asteroid[5];
+        asteroids = new MenuAsteroid[5];
         for(int i = 0 ; i < asteroids.length; i++){
             asteroids[i] = new MenuAsteroid(game,(int)(game.camWidth * Math.random()), (int)(game.camHeight * Math.random()));
         }
@@ -102,7 +102,7 @@ public class MainMenu implements Screen {
 
         game.batch.begin();
         game.batch.draw(background,0,0, game.camWidth,game.camHeight);
-        for(Asteroid as: asteroids){
+        for(MenuAsteroid as: asteroids){
             as.update(delta);
         }
         game.batch.end();
