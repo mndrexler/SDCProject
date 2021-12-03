@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import java.util.List;
 
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Player {
     private int health;
     private int score;
     private Array<Projectile> bullets;
+    private boolean toBeDeleted;
 
     // Graphics and physics
     private World world;
@@ -46,7 +48,7 @@ public class Player {
      * @param name Name of player
      * @param world World
      */
-    public Player(Main game, String name, World world) {
+    public Player(Main game, String name, World world, int posX, int posY) {
         this.game = game;
         this.name = name;
         health = 100;
@@ -56,7 +58,7 @@ public class Player {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(10, 10);
+        bodyDef.position.set(posX, posY);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(50 / game.PIXELS_PER_METER / 2, 50 / game.PIXELS_PER_METER / 2);
         FixtureDef fixtureDef = new FixtureDef();
@@ -67,6 +69,7 @@ public class Player {
         shape.dispose();
         body.setUserData(this);
 
+        sprite.setScale(.1f);
         linAcceleration = 1000;
         rotAcceleration = 70;
         maxLinVelocity = 5;
@@ -106,11 +109,20 @@ public class Player {
 
     public boolean setHealth(int change) {
         health += change;
-        return health <= 0;
+        System.out.println("health: " + health);
+        if (health <= 0) {
+            toBeDeleted = true;
+            sprite.setAlpha(0.0f);
+            //body.setActive(false);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void setScore(int change) {
         score += change;
+        System.out.println("score" + score);
     }
 
     /**
@@ -154,4 +166,13 @@ public class Player {
     public Body getBody() {
         return body;
     }
+
+    public boolean toBeDeleted() {
+        return toBeDeleted;
+    }
+
+    public Array<Projectile> getBullets() {
+        return bullets;
+    }
 }
+

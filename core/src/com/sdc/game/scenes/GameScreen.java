@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sdc.game.*;
@@ -22,6 +23,7 @@ public class GameScreen implements Screen {
 
     private Texture background = new Texture(Gdx.files.internal("gamescreen.jpg"));
     private Player player;
+    private Player testPlayer;
     private Asteroid[] asteroids;
 
     public GameScreen(Main g, String playerName){
@@ -32,10 +34,11 @@ public class GameScreen implements Screen {
         view = new FitViewport(game.camWidth, game.camHeight,cam);
         this.cam.setToOrtho(false, game.camWidth, game.camHeight);
 
-        player = new Player(game, playerName, physics.world);
+        player = new Player(game, playerName, physics.world, 10, 10);
+        testPlayer = new Player(game, "test", physics.world, 20, 10);
         asteroids = new Asteroid[10];
         for(int i = 0; i < asteroids.length; i++){
-            asteroids[i] = new Asteroid(game,(int)(game.camWidth * Math.random()),(int)(game.camHeight * Math.random()));
+            asteroids[i] = new Asteroid(game, physics.world, (int)(game.camWidth * Math.random()),(int)(game.camHeight * Math.random()));
         }
 
         physics.world.setContactListener(new ContactListener() {
@@ -77,10 +80,10 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         physics.logicStep(delta);
-//        Vector3 position = cam.position;
-//        position.x = player.getBody().getPosition().x * game.PIXELS_PER_METER;
-//        position.y = player.getBody().getPosition().y * game.PIXELS_PER_METER;
-//        cam.position.set(position);
+        //        Vector3 position = cam.position;
+        //        position.x = player.getBody().getPosition().x * game.PIXELS_PER_METER;
+        //        position.y = player.getBody().getPosition().y * game.PIXELS_PER_METER;
+        //        cam.position.set(position);
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -91,6 +94,17 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0,0,game.camWidth,game.camHeight);
 
         player.update();
+        testPlayer.update();
+        if (testPlayer.toBeDeleted()) {
+            //physics.world.destroyBody(testPlayer.getBody());
+        }
+        Array<Projectile> bullets = player.getBullets();
+        for(int i = 0; i < bullets.size; i++) {
+            if (bullets.get(i).toBeDeleted()){
+                physics.world.destroyBody(bullets.get(i).getBody());
+                bullets.removeIndex(i);
+            }
+        }
         for (Asteroid asteroid : asteroids) {
             asteroid.update(delta);
         }
@@ -129,3 +143,4 @@ public class GameScreen implements Screen {
         }
     }
 }
+
