@@ -14,10 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.sdc.game.Asteroid;
-import com.sdc.game.Main;
-import com.sdc.game.MenuAsteroid;
-import com.sdc.game.Physics;
+import com.sdc.game.*;
 
 public class MainMenu implements Screen {
     private Texture background;
@@ -31,7 +28,6 @@ public class MainMenu implements Screen {
     public MainMenu(Main g) {
         this.game = g;
         this.cam = new OrthographicCamera();
-        view = new FitViewport(game.camWidth, game.camHeight, cam);
         this.cam.setToOrtho(false,game.camWidth,game.camHeight);
 
         asteroids = new MenuAsteroid[5];
@@ -40,7 +36,7 @@ public class MainMenu implements Screen {
         }
 
         //UI Elements
-        this.stage = new Stage(view);
+        this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
         Table table = new Table();
@@ -113,7 +109,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        view.update(width,height);
+        view.update(width, height);
     }
 
     @Override

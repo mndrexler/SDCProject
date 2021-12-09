@@ -31,14 +31,15 @@ public class GameScreen implements Screen {
         physics = new Physics();
         debugRenderer = new Box2DDebugRenderer();
         cam = new OrthographicCamera();
-        view = new FitViewport(game.camWidth, game.camHeight,cam);
         this.cam.setToOrtho(false, game.camWidth, game.camHeight);
 
         player = new Player(game, playerName, physics.world, 10, 10);
         testPlayer = new Player(game, "test", physics.world, 20, 10);
-        asteroids = new Asteroid[10];
-        for(int i = 0; i < asteroids.length; i++){
-            asteroids[i] = new Asteroid(game, physics.world, (int)(game.camWidth * Math.random()),(int)(game.camHeight * Math.random()));
+        asteroids = new Asteroid[25];
+        for(int i = 0; i < asteroids.length; i++) {
+            asteroids[i] = new Asteroid(game, physics.world,
+                (int) (map.getWidth() / game.PIXELS_PER_METER * Math.random()),
+                (int) (map.getHeight() / game.PIXELS_PER_METER * Math.random()), map);
         }
 
         physics.world.setContactListener(new ContactListener() {
@@ -73,17 +74,47 @@ public class GameScreen implements Screen {
 
     }
 
-    public void collisions(Fixture a, Fixture b) {
+    private void keepBounds() {
+        int mapLeft = 0;
+        int mapRight = map.getWidth();
+        int mapBottom = 0;
+        int mapTop = map.getHeight();
 
+        float cameraHalfWidth = cam.viewportWidth * .5f;
+        float cameraHalfHeight = cam.viewportHeight * .5f;
+
+        float cameraLeft = cam.position.x - cameraHalfWidth;
+        float cameraRight = cam.position.x + cameraHalfWidth;
+        float cameraBottom = cam.position.y - cameraHalfHeight;
+        float cameraTop = cam.position.y + cameraHalfHeight;
+
+        // horizontal axis
+        if (map.getWidth() < cam.viewportWidth) {
+            cam.position.x = mapRight / 2;
+        } else if (cameraLeft <= mapLeft) {
+            cam.position.x = mapLeft + cameraHalfWidth;
+        } else if (cameraRight >= mapRight) {
+            cam.position.x = mapRight - cameraHalfWidth;
+        }
+
+        // vertical axis
+        if (map.getHeight() < cam.viewportHeight) {
+            cam.position.y = mapTop / 2;
+        } else if (cameraBottom <= mapBottom) {
+            cam.position.y = mapBottom + cameraHalfHeight;
+        } else if (cameraTop >= mapTop) {
+            cam.position.y = mapTop - cameraHalfHeight;
+        }
     }
 
     @Override
     public void render(float delta) {
         physics.logicStep(delta);
-        //        Vector3 position = cam.position;
-        //        position.x = player.getBody().getPosition().x * game.PIXELS_PER_METER;
-        //        position.y = player.getBody().getPosition().y * game.PIXELS_PER_METER;
-        //        cam.position.set(position);
+        Vector3 position = new Vector3();
+        position.x = player.getBody().getPosition().x * game.PIXELS_PER_METER;
+        position.y = player.getBody().getPosition().y * game.PIXELS_PER_METER;
+        //cam.position.set(position);
+        keepBounds();
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

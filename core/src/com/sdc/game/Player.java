@@ -70,7 +70,7 @@ public class Player {
         linAcceleration = 1000;
         rotAcceleration = 70;
         maxLinVelocity = 5;
-        maxRotVelocity = 1;
+        maxRotVelocity = 2;
 
         layout = new GlyphLayout();
     }
@@ -142,7 +142,7 @@ public class Player {
         sprite.setPosition(body.getPosition().x * game.PIXELS_PER_METER - sprite.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - sprite.getHeight() / 2);
         sprite.draw(game.batch);
         layout.setText(game.playerFont, name);
-        game.playerFont.draw(game.batch, layout, body.getPosition().x + (sprite.getWidth() - layout.width) / 2, body.getPosition().y - 10);
+        game.playerFont.draw(game.batch, layout, body.getPosition().x * game.PIXELS_PER_METER - layout.width / 2, body.getPosition().y * game.PIXELS_PER_METER - 35);
     }
 
     /**
@@ -171,6 +171,14 @@ public class Player {
      */
     public Body getBody() {
         return body;
+    }
+
+    public int getHealth(){
+        return this.health;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     /**

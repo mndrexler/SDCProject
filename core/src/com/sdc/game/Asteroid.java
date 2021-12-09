@@ -1,7 +1,6 @@
 package com.sdc.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.*;
@@ -11,35 +10,45 @@ public class Asteroid {
     private Main game;
 
     // Object information
-    private int x,y,velX,velY;
-    private float rot = 0;
+    private double force;
+    private double angle;
+    private float rot = (float)Math.random() * 10 - 5;
     private float rotUp = (float)(100*Math.random()) * Math.random()>=.5?1:-1 + 200;
 
     // Graphics and physics
     private Texture texture = new Texture(Gdx.files.internal("asteroid.png"));
     private Sprite sprite = new Sprite(texture);
+
     //private Rectangle collider;
     private Body body;
 
-    private GlyphLayout layout;
-
-    public Asteroid(Main game, World world, int x, int y) {
+    public Asteroid(Main game, World world, int x, int y, Map map) {
         this.game = game;
-        //collider = new Rectangle(x, y, 40, 40);
-        layout = new GlyphLayout();
-        this.x = x;
-        this.y = y;
-        this.velX = (int)(1000*Math.random()) * Math.random()>=.5?1:-1 + 5000;
-        this.velY = (int)(1000*Math.random()) * Math.random()>=.5?1:-1 + 4000;
+
+
+        if (x > map.getWidth() / 2) {
+            if (y > map.getHeight() / 2) { // 1st quadrant
+                angle = Math.PI + Math.PI / 2 * Math.random();
+            } else { // 4th quadrant
+                angle = Math.PI / 2 + Math.PI / 2 * Math.random();
+            }
+        } else {
+            if (y > map.getHeight()) { // 2nd quadrant
+                angle = Math.PI * 3 / 2 + Math.PI / 2 * Math.random();
+            } else { // 3rd quadrant
+                angle = Math.PI / 2 * Math.random();
+            }
+        }
+
+
+        this.force = 5 + (int)(5*Math.random());
 
         // Body setup
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
-        //PolygonShape shape = new PolygonShape();
-        //shape.setAsBox(30 / game.PIXELS_PER_METER / 2, 30 / game.PIXELS_PER_METER / 2);
         CircleShape shape = new CircleShape();
-        shape.setRadius(20 / game.PIXELS_PER_METER / 2);
+        shape.setRadius(30 / game.PIXELS_PER_METER / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
@@ -48,8 +57,11 @@ public class Asteroid {
         shape.dispose();
         body.setUserData(this);
 
-        body.applyForceToCenter(velX, velY, true);
-        body.setAngularVelocity(rotUp);
+        sprite.setScale(0.06f);
+        body.applyForceToCenter((float)(force * Math.cos(angle)), (float)(force * Math.sin(angle)), true);
+        body.setAngularVelocity(rot);
+        System.out.println(rot);
+        System.out.println(body.getAngularVelocity());
     }
 
     private void draw() {

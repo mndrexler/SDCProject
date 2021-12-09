@@ -15,7 +15,6 @@ public class Projectile {
 
     // Object information
     private float speed;
-    private float angle;
     private boolean toBeDeleted;
 
     // Graphics and physics
@@ -35,25 +34,25 @@ public class Projectile {
      */
     public Projectile(float x, float y, float angle, Player parent, Main game, World world) {
         this.game = game;
-        this.angle = angle;
         this.parent = parent;
 
         // Body setup
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(10 / game.PIXELS_PER_METER / 2, 5 / game.PIXELS_PER_METER / 2);
+        shape.setAsBox(16 / game.PIXELS_PER_METER / 2, 8 / game.PIXELS_PER_METER / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         shape.dispose();
-        body.setTransform(x + (float)Math.cos(angle) * 1, y + (float)Math.sin(angle) * 1, angle);
+        body.setTransform(x + (float)(Math.cos(angle) * 1.1), y + (float)(Math.sin(angle) * 1.1), angle);
         body.setUserData(this);
 
         speed = 8;
         toBeDeleted = false;
+        sprite.setScale(1.2f);
     }
 
     /**
@@ -83,7 +82,7 @@ public class Projectile {
      * Renders the projectile
      */
     private void draw() {
-        sprite.setRotation(body.getAngle() / game.DEGREES_TO_RADIANS - 90);
+        sprite.setRotation(body.getAngle() / game.DEGREES_TO_RADIANS);
         sprite.setPosition(body.getPosition().x * game.PIXELS_PER_METER - sprite.getWidth() / 2, body.getPosition().y * game.PIXELS_PER_METER - sprite.getHeight() / 2);
         sprite.draw(game.batch);
     }
