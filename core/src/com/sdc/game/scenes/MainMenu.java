@@ -2,6 +2,8 @@ package com.sdc.game.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -27,7 +29,7 @@ public class MainMenu implements Screen {
     private OrthographicCamera cam;
     private Stage stage;
     private Viewport view;
-
+    private Sound menuMusic;
     private MenuAsteroid[] asteroids;
 
     public MainMenu(Main g) {
@@ -35,7 +37,7 @@ public class MainMenu implements Screen {
         this.cam = new OrthographicCamera();
         this.cam.setToOrtho(false,game.camWidth,game.camHeight);
         this.view = new FitViewport(game.camWidth, game.camHeight, cam);
-
+        this.menuMusic = Gdx.audio.newSound(Gdx.files.internal("music/drone-space-main-9706.wav"));
         asteroids = new MenuAsteroid[5];
         for(int i = 0 ; i < asteroids.length; i++){
             asteroids[i] = new MenuAsteroid(game,(int)(game.camWidth * Math.random()), (int)(game.camHeight * Math.random()));
@@ -99,7 +101,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
-
+        menuMusic.loop();
     }
 
     public Clip playAudio(String wav, boolean isMusic) {
@@ -149,22 +151,23 @@ public class MainMenu implements Screen {
 
     @Override
     public void pause() {
-
+        menuMusic.pause();
     }
 
     @Override
     public void resume() {
-
+        menuMusic.loop();
     }
 
     @Override
     public void hide() {
-
+        menuMusic.pause();
     }
 
     @Override
     public void dispose() {
         background.dispose();
         stage.dispose();
+        menuMusic.dispose();
     }
 }
