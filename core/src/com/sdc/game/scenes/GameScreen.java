@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sdc.game.*;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 import javax.swing.*;
 
@@ -20,6 +21,7 @@ public class GameScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera cam;
     private Viewport view;
+    private HUD hud;
 
     private Texture background = new Texture(Gdx.files.internal("gamescreen.jpg"));
     private Player player;
