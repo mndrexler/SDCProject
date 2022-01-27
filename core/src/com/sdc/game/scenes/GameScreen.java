@@ -25,6 +25,7 @@ public class GameScreen implements Screen {
     private Player player;
     private Player testPlayer;
     private Asteroid[] asteroids;
+    private Map map;
 
     public GameScreen(Main g, String playerName){
         this.game = g;
@@ -32,8 +33,11 @@ public class GameScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
         cam = new OrthographicCamera();
         this.cam.setToOrtho(false, game.camWidth, game.camHeight);
+        view = new FitViewport(game.camWidth, game.camHeight, cam);
+        map = new Map(game.batch);
 
         player = new Player(game, playerName, physics.world, 10, 10);
+        hud = new HUD(game.batch,player);
         testPlayer = new Player(game, "test", physics.world, 20, 10);
         asteroids = new Asteroid[25];
         for(int i = 0; i < asteroids.length; i++) {
@@ -122,7 +126,7 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
 
         game.batch.begin();
-        game.batch.draw(background, 0,0,game.camWidth,game.camHeight);
+        map.render(delta);
 
         player.update();
         testPlayer.update();
@@ -140,6 +144,9 @@ public class GameScreen implements Screen {
             asteroid.update();
         }
         game.batch.end();
+
+        game.batch.setProjectionMatrix(hud.getStage().getCamera().combined);
+        hud.update(delta);
         debugRenderer.render(physics.world, cam.combined.scl(game.PIXELS_PER_METER));
     }
 
@@ -171,6 +178,7 @@ public class GameScreen implements Screen {
         physics.world.dispose();
         debugRenderer.dispose();
         for(Asteroid as: asteroids) as.dispose();
+        hud.dispose();
     }
 }
 

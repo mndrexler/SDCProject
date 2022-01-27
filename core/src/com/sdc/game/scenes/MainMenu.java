@@ -29,6 +29,7 @@ public class MainMenu implements Screen {
         this.game = g;
         this.cam = new OrthographicCamera();
         this.cam.setToOrtho(false,game.camWidth,game.camHeight);
+        this.view = new FitViewport(game.camWidth, game.camHeight, cam);
 
         asteroids = new MenuAsteroid[5];
         for(int i = 0 ; i < asteroids.length; i++){
@@ -62,11 +63,18 @@ public class MainMenu implements Screen {
         final TextButton playButton = new TextButton("Play",skin);
         buttonTable.add(playButton).fill().padRight(20f);
 
-        final TextButton joinButton = new TextButton("Join",skin);
-        buttonTable.add(joinButton).fill().padLeft(20f);
+        final TextButton exitButton = new TextButton("Exit",skin);
+        buttonTable.add(exitButton).fill().padLeft(20f);
 
         table.add(buttonTable);
 
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                Gdx.app.exit();
+                System.exit(0);
+            }
+        });
         playButton.addListener(new ClickListener(){
            @Override
            public void clicked(InputEvent event, float x, float y){
