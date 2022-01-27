@@ -22,24 +22,42 @@ public class Asteroid {
     //private Rectangle collider;
     private Body body;
 
-    public Asteroid(Main game, World world, int x, int y, Map map) {
+    public Asteroid(Main game, World world, Map map) {
         this.game = game;
 
-
-        if (x > map.getWidth() / 2) {
-            if (y > map.getHeight() / 2) { // 1st quadrant
-                angle = Math.PI + Math.PI / 2 * Math.random();
-            } else { // 4th quadrant
-                angle = Math.PI / 2 + Math.PI / 2 * Math.random();
-            }
+        int rand = (int)(Math.random() * 4);
+        int x;
+        int y;
+        if (rand == 0) {
+            x = (int) (map.getWidth() / game.PIXELS_PER_METER * Math.random());
+            y = (int) (map.getHeight() / game.PIXELS_PER_METER) + 10;
+            angle = Math.PI + Math.PI * Math.random();
+        } else if (rand == 1) {
+            x = (int) (map.getWidth() / game.PIXELS_PER_METER) + 10;
+            y = (int) (map.getHeight() / game.PIXELS_PER_METER * Math.random());
+//            angle =
+        } else if (rand == 2) {
+            x = (int) (map.getWidth() / game.PIXELS_PER_METER * Math.random());
+            y = - 10;
+            angle = Math.PI * Math.random();
         } else {
-            if (y > map.getHeight()) { // 2nd quadrant
-                angle = Math.PI * 3 / 2 + Math.PI / 2 * Math.random();
-            } else { // 3rd quadrant
-                angle = Math.PI / 2 * Math.random();
-            }
+            x = -10;
+            y = (int) (map.getHeight() / game.PIXELS_PER_METER * Math.random());
         }
-
+        // Spawning behavior
+//        if (x > map.getWidth() / 2) {
+//            if (y > map.getHeight() / 2) { // 1st quadrant
+//                angle = Math.PI + Math.PI / 2 * Math.random();
+//            } else { // 4th quadrant
+//                angle = Math.PI / 2 + Math.PI / 2 * Math.random();
+//            }
+//        } else {
+//            if (y > map.getHeight()) { // 2nd quadrant
+//                angle = Math.PI * 3 / 2 + Math.PI / 2 * Math.random();
+//            } else { // 3rd quadrant
+//                angle = Math.PI / 2 * Math.random();
+//            }
+//        }
 
         this.force = 5 + (int)(5*Math.random());
 

@@ -13,7 +13,11 @@ import com.sdc.game.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
+import java.io.File;
 
 public class GameScreen implements Screen {
     private Main game;
@@ -43,9 +47,7 @@ public class GameScreen implements Screen {
         testPlayer = new Player(game, "test", physics.world, 20, 10);
         asteroids = new Asteroid[25];
         for(int i = 0; i < asteroids.length; i++) {
-            asteroids[i] = new Asteroid(game, physics.world,
-                (int) (map.getWidth() / game.PIXELS_PER_METER * Math.random()),
-                (int) (map.getHeight() / game.PIXELS_PER_METER * Math.random()), map);
+            asteroids[i] = new Asteroid(game, physics.world, map);
         }
 
         physics.world.setContactListener(new ContactListener() {
@@ -112,6 +114,28 @@ public class GameScreen implements Screen {
             cam.position.y = mapTop - cameraHalfHeight;
         }
     }
+
+    public Clip playAudio(String wav, boolean isMusic) {
+        Clip clip = null;
+
+        try {
+            File file = new File(wav);
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(file);
+
+            clip = AudioSystem.getClip();
+            clip.open(audioInput);
+            clip.start();
+
+            if (isMusic) {
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return clip;
+    }
+
 
     @Override
     public void render(float delta) {

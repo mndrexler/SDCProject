@@ -16,6 +16,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.sdc.game.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+
 public class MainMenu implements Screen {
     private Texture background;
     private Main game;
@@ -96,6 +101,28 @@ public class MainMenu implements Screen {
     public void show() {
 
     }
+
+    public Clip playAudio(String wav, boolean isMusic) {
+        Clip clip = null;
+
+        try {
+            File file = new File(wav);
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(file);
+
+            clip = AudioSystem.getClip();
+            clip.open(audioInput);
+            clip.start();
+
+            if (isMusic) {
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return clip;
+    }
+
 
     @Override
     public void render(float delta) {
